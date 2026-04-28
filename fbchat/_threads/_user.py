@@ -51,14 +51,10 @@ class User(ThreadABC):
     id: str = attr.ib(converter=str)
 
     def _to_send_data(self):
-        return {
-            "other_user_fbid": self.id,
-            # The entry below is to support .wave
-            "specific_to_list[0]": "fbid:{}".format(self.id),
-        }
+        pass
 
     def _copy(self) -> "User":
-        return User(session=self.session, id=self.id)
+        pass
 
     async def confirm_friend_request(self):
         """Confirm a friend request, adding the user to your friend list.
@@ -66,8 +62,7 @@ class User(ThreadABC):
         Example:
             >>> user.confirm_friend_request()
         """
-        data = {"to_friend": self.id, "action": "confirm"}
-        j = await self.session._payload_post("/ajax/add_friend/action.php?dpr=1", data)
+        pass
 
     async def remove_friend(self):
         """Remove the user from the client's friend list.
@@ -75,8 +70,7 @@ class User(ThreadABC):
         Example:
             >>> user.remove_friend()
         """
-        data = {"uid": self.id}
-        j = await self.session._payload_post("/ajax/profile/removefriendconfirm.php", data)
+        pass
 
     async def block(self):
         """Block messages from the user.
@@ -84,8 +78,7 @@ class User(ThreadABC):
         Example:
             >>> user.block()
         """
-        data = {"fbid": self.id}
-        j = await self.session._payload_post("/messaging/block_messages/?dpr=1", data)
+        pass
 
     async def unblock(self):
         """Unblock a previously blocked user.
@@ -93,8 +86,7 @@ class User(ThreadABC):
         Example:
             >>> user.unblock()
         """
-        data = {"fbid": self.id}
-        j = await self.session._payload_post("/messaging/unblock_messages/?dpr=1", data)
+        pass
 
 
 @attrs_default
@@ -137,12 +129,7 @@ class UserData(User):
 
     @staticmethod
     def _get_other_user(data):
-        (user,) = (
-            node["messaging_actor"]
-            for node in data["all_participants"]["nodes"]
-            if node["messaging_actor"]["id"] == data["thread_key"]["other_user_id"]
-        )
-        return user
+        pass
 
     @classmethod
     def _from_graphql(cls, session, data):
@@ -175,47 +162,8 @@ class UserData(User):
 
     @classmethod
     def _from_thread_fetch(cls, session, data):
-        user = cls._get_other_user(data)
-        if user["__typename"] != "User":
-            # TODO: Add Page._from_thread_fetch, and parse it there
-            log.warning("Tried to parse %s as a user.", user["__typename"])
-            return None
-
-        c_info = cls._parse_customization_info(data)
-
-        plan = None
-        if data["event_reminders"]["nodes"]:
-            plan = _models.PlanData._from_graphql(
-                session, data["event_reminders"]["nodes"][0]
-            )
-
-        return cls(
-            session=session,
-            id=user["id"],
-            url=user["url"],
-            name=user["name"],
-            first_name=user["short_name"],
-            is_friend=user["is_viewer_friend"],
-            gender=GENDERS.get(user["gender"]),
-            nickname=c_info.get("nickname"),
-            color=c_info["color"],
-            emoji=c_info["emoji"],
-            own_nickname=c_info.get("own_nickname"),
-            photo=_models.Image._from_uri(user["big_image_src"]),
-            message_count=data["messages_count"],
-            last_active=_util.millis_to_datetime(int(data["updated_time_precise"])),
-            plan=plan,
-        )
+        pass
 
     @classmethod
     def _from_all_fetch(cls, session, data):
-        return cls(
-            session=session,
-            id=data["id"],
-            first_name=data["firstName"],
-            url=data["uri"],
-            photo=_models.Image(url=data["thumbSrc"]),
-            name=data["name"],
-            is_friend=data["is_friend"],
-            gender=GENDERS.get(data["gender"]),
-        )
+        pass

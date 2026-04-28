@@ -23,10 +23,10 @@ class Page(ThreadABC):
     id: str = attr.ib(converter=str)
 
     def _to_send_data(self):
-        return {"other_user_fbid": self.id}
+        pass
 
     def _copy(self) -> "Page":
-        return Page(session=self.session, id=self.id)
+        pass
 
 
 @attrs_default

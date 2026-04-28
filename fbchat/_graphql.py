@@ -10,15 +10,7 @@ WHITESPACE = re.compile(r"[ \t\n\r]*", FLAGS)
 
 class ConcatJSONDecoder(json.JSONDecoder):
     def decode(self, s, _w=WHITESPACE.match):
-        s_len = len(s)
-
-        objs = []
-        end = 0
-        while end != s_len:
-            obj, end = self.raw_decode(s, idx=_w(s, end).end())
-            end = _w(s, end).end()
-            objs.append(obj)
-        return objs
+        pass
 
 
 # End shameless copy
@@ -62,19 +54,19 @@ def response_to_json(text):
 
 
 def from_query(query, params):
-    return {"priority": 0, "q": query, "query_params": params}
+    pass
 
 
 def from_query_id(query_id, params):
-    return {"query_id": query_id, "query_params": params}
+    pass
 
 
 def from_doc(doc, params):
-    return {"doc": doc, "query_params": params}
+    pass
 
 
 def from_doc_id(doc_id, params):
-    return {"doc_id": doc_id, "query_params": params}
+    pass
 
 
 FRAGMENT_USER = """

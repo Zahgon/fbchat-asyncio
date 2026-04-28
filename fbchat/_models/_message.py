@@ -65,12 +65,7 @@ class Mention:
         return cls(thread_id=data["i"], offset=data["o"], length=data["l"])
 
     def _to_send_data(self, i):
-        return {
-            "profile_xmd[{}][id]".format(i): self.thread_id,
-            "profile_xmd[{}][offset]".format(i): self.offset,
-            "profile_xmd[{}][length]".format(i): self.length,
-            "profile_xmd[{}][type]".format(i): "p",
-        }
+        pass
 
 
 @attrs_default
@@ -90,14 +85,11 @@ class Message:
     @property
     def session(self):
         """The session to use when making requests."""
-        return self.thread.session
+        pass
 
     @staticmethod
     async def _delete_many(session, message_ids):
-        data = {}
-        for i, id_ in enumerate(message_ids):
-            data["message_ids[{}]".format(i)] = id_
-        j = await session._payload_post("/ajax/mercury/delete_messages.php?dpr=1", data)
+        pass
 
     async def delete(self):
         """Delete the message (removes it only for the user).
@@ -107,7 +99,7 @@ class Message:
         Example:
             >>> message.delete()
         """
-        await self._delete_many(self.session, [self.id])
+        pass
 
     async def unsend(self):
         """Unsend the message (removes it for everyone).
@@ -117,8 +109,7 @@ class Message:
         Example:
             >>> message.unsend()
         """
-        data = {"message_id": self.id}
-        j = await self.session._payload_post("/messaging/unsend_message/?dpr=1", data)
+        pass
 
     async def react(self, reaction: Optional[str]):
         """React to the message, or removes reaction.
@@ -129,19 +120,7 @@ class Message:
         Example:
             >>> message.react("😍")
         """
-        data = {
-            "action": "ADD_REACTION" if reaction else "REMOVE_REACTION",
-            "client_mutation_id": "1",
-            "actor_id": self.session.user.id,
-            "message_id": self.id,
-            "reaction": reaction,
-        }
-        data = {
-            "doc_id": 1491398900900362,
-            "variables": _util.json_minimal({"data": data}),
-        }
-        j = await self.session._payload_post("/webgraphql/mutation", data)
-        _exception.handle_graphql_errors(j)
+        pass
 
     async def fetch(self) -> "MessageData":
         """Fetch fresh `MessageData` object.
@@ -151,8 +130,7 @@ class Message:
             >>> message.text
             "The message text"
         """
-        message_info = (await self.thread._forced_fetch(self.id)).get("message")
-        return MessageData._from_graphql(self.thread, message_info)
+        pass
 
     @staticmethod
     def format_mentions(text, *args, **kwargs):
@@ -166,43 +144,7 @@ class Message:
         >>> Message.format_mentions("Hey {p}! My name is {}", ("1234", "Michael"), p=("4321", "Peter"))
         ('Hey Peter! My name is Michael', [Mention(thread_id=4321, offset=4, length=5), Mention(thread_id=1234, offset=22, length=7)])
         """
-        result = ""
-        mentions = list()
-        offset = 0
-        f = Formatter()
-        field_names = [field_name[1] for field_name in f.parse(text)]
-        automatic = "" in field_names
-        i = 0
-
-        for (literal_text, field_name, format_spec, conversion) in f.parse(text):
-            offset += len(literal_text)
-            result += literal_text
-
-            if field_name is None:
-                continue
-
-            if field_name == "":
-                field_name = str(i)
-                i += 1
-            elif automatic and field_name.isdigit():
-                raise ValueError(
-                    "cannot switch from automatic field numbering to manual field specification"
-                )
-
-            thread_id, name = f.get_field(field_name, args, kwargs)[0]
-
-            if format_spec:
-                name = f.format_field(name, format_spec)
-            if conversion:
-                name = f.convert_field(name, conversion)
-
-            result += name
-            mentions.append(
-                Mention(thread_id=thread_id, offset=offset, length=len(name))
-            )
-            offset += len(name)
-
-        return result, mentions
+        pass
 
 
 @attrs_default

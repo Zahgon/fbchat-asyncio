@@ -41,9 +41,7 @@ class Plan:
             >>> plan.title
             "A plan"
         """
-        data = {"event_reminder_id": self.id}
-        j = await self.session._payload_post("/ajax/eventreminder", data)
-        return PlanData._from_fetch(self.session, j)
+        pass
 
     @classmethod
     async def _create(
@@ -54,18 +52,7 @@ class Plan:
         location_name: str = None,
         location_id: str = None,
     ):
-        data = {
-            "event_type": "EVENT",
-            "event_time": _util.datetime_to_seconds(at),
-            "title": name,
-            "thread_id": thread.id,
-            "location_id": location_id or "",
-            "location_name": location_name or "",
-            "acontext": ACONTEXT,
-        }
-        j = await thread.session._payload_post("/ajax/eventreminder/create", data)
-        if "error" in j:
-            raise _exception.ExternalError("Failed creating plan", j["error"])
+        pass
 
     async def edit(
         self,
@@ -78,16 +65,7 @@ class Plan:
 
         # TODO: Arguments
         """
-        data = {
-            "event_reminder_id": self.id,
-            "delete": "false",
-            "date": _util.datetime_to_seconds(at),
-            "location_name": location_name or "",
-            "location_id": location_id or "",
-            "title": name,
-            "acontext": ACONTEXT,
-        }
-        j = await self.session._payload_post("/ajax/eventreminder/submit", data)
+        pass
 
     async def delete(self):
         """Delete the plan.
@@ -95,16 +73,10 @@ class Plan:
         Example:
             >>> plan.delete()
         """
-        data = {"event_reminder_id": self.id, "delete": "true", "acontext": ACONTEXT}
-        j = await self.session._payload_post("/ajax/eventreminder/submit", data)
+        pass
 
     async def _change_participation(self, take_part):
-        data = {
-            "event_reminder_id": self.id,
-            "guest_state": "GOING" if take_part else "DECLINED",
-            "acontext": ACONTEXT,
-        }
-        j = await self.session._payload_post("/ajax/eventreminder/rsvp", data)
+        pass
 
     async def participate(self):
         """Set yourself as GOING/participating to the plan.
@@ -112,7 +84,7 @@ class Plan:
         Example:
             >>> plan.participate()
         """
-        return await self._change_participation(True)
+        pass
 
     async def decline(self):
         """Set yourself as having DECLINED the plan.
@@ -120,7 +92,7 @@ class Plan:
         Example:
             >>> plan.decline()
         """
-        return await self._change_participation(False)
+        pass
 
 
 @attrs_default
@@ -143,29 +115,17 @@ class PlanData(Plan):
     @property
     def going(self) -> Sequence[str]:
         """List of the `User` IDs who will take part in the plan."""
-        return [
-            id_
-            for id_, status in (self.guests or {}).items()
-            if status is GuestStatus.GOING
-        ]
+        pass
 
     @property
     def declined(self) -> Sequence[str]:
         """List of the `User` IDs who won't take part in the plan."""
-        return [
-            id_
-            for id_, status in (self.guests or {}).items()
-            if status is GuestStatus.DECLINED
-        ]
+        pass
 
     @property
     def invited(self) -> Sequence[str]:
         """List of the `User` IDs who are invited to the plan."""
-        return [
-            id_
-            for id_, status in (self.guests or {}).items()
-            if status is GuestStatus.INVITED
-        ]
+        pass
 
     @classmethod
     def _from_pull(cls, session, data):
@@ -185,16 +145,7 @@ class PlanData(Plan):
 
     @classmethod
     def _from_fetch(cls, session, data):
-        return cls(
-            session=session,
-            id=data.get("oid"),
-            time=_util.seconds_to_datetime(data.get("event_time")),
-            title=data.get("title"),
-            location=data.get("location_name"),
-            location_id=str(data["location_id"]) if data.get("location_id") else None,
-            author_id=data.get("creator_id"),
-            guests={id_: GuestStatus[s] for id_, s in data["event_members"].items()},
-        )
+        pass
 
     @classmethod
     def _from_graphql(cls, session, data):

@@ -79,9 +79,7 @@ class Poll:
             >>> options[0].text
             "An option"
         """
-        data = {"question_id": self.id}
-        j = await self.session._payload_post("/ajax/mercury/get_poll_options", data)
-        return [PollOption._from_graphql(m) for m in j]
+        pass
 
     async def set_votes(self, option_ids: Iterable[str], new_options: Iterable[str] = None):
         """Update the user's poll vote.
@@ -97,19 +95,4 @@ class Poll:
             >>> # Remove vote from option
             >>> poll.set_votes([o.id for o in options if o.text != "Option 1"])
         """
-        data = {"question_id": self.id}
-
-        for i, option_id in enumerate(option_ids or ()):
-            data["selected_options[{}]".format(i)] = option_id
-
-        for i, option_text in enumerate(new_options or ()):
-            data["new_options[{}]".format(i)] = option_text
-
-        j = await self.session._payload_post(
-            "/messaging/group_polling/update_vote/?dpr=1", data
-        )
-        if j.get("status") != "success":
-            raise _exception.ExternalError(
-                "Failed updating poll vote: {}".format(j.get("errorTitle")),
-                j.get("errorMessage"),
-            )
+        pass

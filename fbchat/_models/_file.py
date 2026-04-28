@@ -94,18 +94,7 @@ class ImageAttachment(Attachment):
 
     @classmethod
     def _from_list(cls, data):
-        previews = {
-            Image._from_uri_or_none(data["image"]),
-            Image._from_uri(data["image1"]),
-            Image._from_uri(data["image2"]),
-        }
-
-        return cls(
-            width=data["original_dimensions"].get("x"),
-            height=data["original_dimensions"].get("y"),
-            previews={p for p in previews if p},
-            id=data["legacy_attachment_id"],
-        )
+        pass
 
 
 @attrs_default
@@ -157,18 +146,7 @@ class VideoAttachment(Attachment):
 
     @classmethod
     def _from_list(cls, data):
-        previews = {
-            Image._from_uri(data["image"]),
-            Image._from_uri(data["image1"]),
-            Image._from_uri(data["image2"]),
-        }
-
-        return cls(
-            width=data["original_dimensions"].get("x"),
-            height=data["original_dimensions"].get("y"),
-            previews=previews,
-            id=data["legacy_attachment_id"],
-        )
+        pass
 
 
 def graphql_to_attachment(data, size=None):

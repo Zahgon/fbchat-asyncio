@@ -22,10 +22,10 @@ class Group(ThreadABC):
     id: str = attr.ib(converter=str)
 
     def _to_send_data(self):
-        return {"thread_fbid": self.id}
+        pass
 
     def _copy(self) -> "Group":
-        return Group(session=self.session, id=self.id)
+        pass
 
     async def add_participants(self, user_ids: Iterable[str]):
         """Add users to the group.
@@ -36,22 +36,7 @@ class Group(ThreadABC):
         Example:
             >>> group.add_participants(["1234", "2345"])
         """
-        data = self._to_send_data()
-
-        data["action_type"] = "ma-type:log-message"
-        data["log_message_type"] = "log:subscribe"
-
-        for i, user_id in enumerate(user_ids):
-            if user_id == self.session.user.id:
-                raise ValueError(
-                    "Error when adding users: Cannot add self to group thread"
-                )
-            else:
-                data[
-                    "log_message_data[added_participants][{}]".format(i)
-                ] = "fbid:{}".format(user_id)
-
-        return await self.session._do_send_request(data)
+        pass
 
     async def remove_participant(self, user_id: str):
         """Remove user from the group.
@@ -62,16 +47,10 @@ class Group(ThreadABC):
         Example:
             >>> group.remove_participant("1234")
         """
-        data = {"uid": user_id, "tid": self.id}
-        j = await self.session._payload_post("/chat/remove_participants/", data)
+        pass
 
     async def _admin_status(self, user_ids: Iterable[str], status: bool):
-        data = {"add": status, "thread_fbid": self.id}
-
-        for i, user_id in enumerate(user_ids):
-            data["admin_ids[{}]".format(i)] = str(user_id)
-
-        j = await self.session._payload_post("/messaging/save_admins/?dpr=1", data)
+        pass
 
     async def add_admins(self, user_ids: Iterable[str]):
         """Set specified users as group admins.
@@ -82,7 +61,7 @@ class Group(ThreadABC):
         Example:
             >>> group.add_admins(["1234", "2345"])
         """
-        await self._admin_status(user_ids, True)
+        pass
 
     async def remove_admins(self, user_ids: Iterable[str]):
         """Remove admin status from specified users.
@@ -93,7 +72,7 @@ class Group(ThreadABC):
         Example:
             >>> group.remove_admins(["1234", "2345"])
         """
-        await self._admin_status(user_ids, False)
+        pass
 
     async def set_title(self, title: str):
         """Change title of the group.
@@ -104,8 +83,7 @@ class Group(ThreadABC):
         Example:
             >>> group.set_title("Abc")
         """
-        data = {"thread_name": title, "thread_id": self.id}
-        j = await self.session._payload_post("/messaging/set_thread_name/?dpr=1", data)
+        pass
 
     async def set_image(self, image_id: str):
         """Change the group image from an image id.
@@ -121,8 +99,7 @@ class Group(ThreadABC):
             ...
             >>> group.set_image(file[0])
         """
-        data = {"thread_image_id": image_id, "thread_id": self.id}
-        j = await self.session._payload_post("/messaging/set_thread_image/?dpr=1", data)
+        pass
 
     async def set_approval_mode(self, require_admin_approval: bool):
         """Change the group's approval mode.
@@ -133,21 +110,10 @@ class Group(ThreadABC):
         Example:
             >>> group.set_approval_mode(False)
         """
-        data = {"set_mode": int(require_admin_approval), "thread_fbid": self.id}
-        j = await self.session._payload_post("/messaging/set_approval_mode/?dpr=1", data)
+        pass
 
     async def _users_approval(self, user_ids: Iterable[str], approve: bool):
-        data = {
-            "client_mutation_id": "0",
-            "actor_id": self.session.user.id,
-            "thread_fbid": self.id,
-            "user_ids": list(user_ids),
-            "response": "ACCEPT" if approve else "DENY",
-            "surface": "ADMIN_MODEL_APPROVAL_CENTER",
-        }
-        (j,) = await self.session._graphql_requests(
-            _graphql.from_doc_id("1574519202665847", {"data": data})
-        )
+        pass
 
     async def accept_users(self, user_ids: Iterable[str]):
         """Accept users to the group from the group's approval.
@@ -158,7 +124,7 @@ class Group(ThreadABC):
         Example:
             >>> group.accept_users(["1234", "2345"])
         """
-        await self._users_approval(user_ids, True)
+        pass
 
     async def deny_users(self, user_ids: Iterable[str]):
         """Deny users from joining the group.
@@ -169,7 +135,7 @@ class Group(ThreadABC):
         Example:
             >>> group.deny_users(["1234", "2345"])
         """
-        await self._users_approval(user_ids, False)
+        pass
 
 
 @attrs_default
@@ -273,7 +239,4 @@ class NewGroup(ThreadABC):
         )
 
     def _to_send_data(self) -> dict:
-        return {
-            "specific_to_list[{}]".format(i): "fbid:{}".format(user.id)
-            for i, user in enumerate(self._users)
-        }
+        pass

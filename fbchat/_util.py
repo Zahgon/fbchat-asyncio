@@ -11,28 +11,12 @@ from typing import Iterable, Optional, Any, Mapping, Sequence
 
 
 def int_or_none(inp: Any) -> Optional[int]:
-    try:
-        return int(inp)
-    except Exception:
-        return None
+    pass
 
 
 def get_limits(limit: Optional[int], max_limit: int) -> Iterable[int]:
     """Helper that generates limits based on a max limit."""
-    if limit is None:
-        # Generate infinite items
-        while True:
-            yield max_limit
-
-    if limit < 0:
-        raise ValueError("Limit cannot be negative")
-
-    # Generate n items
-    yield from [max_limit] * (limit // max_limit)
-
-    remainder = limit % max_limit
-    if remainder:
-        yield remainder
+    pass
 
 
 def json_minimal(data: Any) -> str:
@@ -56,11 +40,7 @@ def parse_json(text: str) -> Any:
 
 
 def generate_offline_threading_id():
-    ret = datetime_to_millis(now())
-    value = int(random.random() * 4294967295)
-    string = ("0000000000000000000000" + format(value, "b"))[-22:]
-    msgs = format(ret, "b") + string
-    return str(int(msgs, 2))
+    pass
 
 
 def remove_version_from_module(module):
@@ -165,4 +145,4 @@ def now() -> datetime.datetime:
 
     Similar to datetime.datetime.now(), but returns a non-naive datetime.
     """
-    return datetime.datetime.now(tz=datetime.timezone.utc)
+    pass
